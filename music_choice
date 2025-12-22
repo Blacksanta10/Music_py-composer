@@ -1,0 +1,40 @@
+# This allows you to choose a music track to play
+from musicpy import *
+from Demo_music import *
+
+# this is a dictionary that contains track_num, name and associated play function
+music_tracks = {
+    1 : ("Broken Chords", play_broken_chords),
+    2 : ("Ethereal piano sound", play_ethereal_piano_sound),
+    3 : ("Jrock Intro", play_jrock_intro), 
+    4 : ("Piano Nocture", play_piano_nocturne_op), 
+    5 : ("Non-hamonic game music", play_non_harmonic_game),
+    6 : ("Rolling star Yui", play_rolling_star_yui)
+}
+
+
+while True:
+    print("\n Track menu")
+    print("-" * 20)
+
+    # Print each track number and their name
+    for num, (name, _) in music_tracks.items():
+        print(f'{num}. {name}')
+    print("0. Quit")
+
+
+    try:
+        # User can choose a music track 
+        track_num = int(input(f'Choose a option dummy: '))
+
+        if track_num == 0:
+            print(f'Goodbye fuckface')
+            break
+        
+        # Calls the specific play function. dict[key][value = tuple_index](function_call)
+        music_tracks[track_num][1]()
+
+    except(ValueError, KeyError):
+        print(f'Invalid track selection')
+
+    
