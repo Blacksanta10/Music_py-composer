@@ -30,6 +30,11 @@ class MyApp extends StatelessWidget {
 // defines the app's state or the data needed for the app to run
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
+
+  void getNext() {
+    current = WordPair.random(); // reassigns current with new word pair
+    notifyListeners(); // method of ChangeNotifier, ensures that anyone watching MyAppState is notified
+  }
 }
 
 
@@ -38,19 +43,43 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var pair = appState.current;  // widget for word pair
 
     return Scaffold(
       body: Column(
         children: [
           Text('A random idea:'), 
-          Text(appState.current.asLowerCase),
+          BigCard(pair: pair),
           ElevatedButton(
             onPressed: () {
-              print('button pressed!');
+              appState.getNext();
             },
             child: Text('Next'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class BigCard extends StatelessWidget {
+  const BigCard({
+    super.key,
+    required this.pair,
+  });
+
+  final WordPair pair;
+
+  @override
+  // build method for BigCard
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      color: theme.colorScheme.primary, // card's color from app's color scheme
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Text(pair.asLowerCase),
       ),
     );
   }
