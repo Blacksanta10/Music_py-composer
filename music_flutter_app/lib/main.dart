@@ -50,45 +50,70 @@ class MyAppState extends ChangeNotifier {
 
 
 // Each build method returns a widget (Scaffold, Text, Column)
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() =>
+  _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  var selectedIndex = 0;  //keep track of this variable
+
   @override
   Widget build(BuildContext context) {
-    
-    return Scaffold(
-      body: Row(              
-          children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: false,
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = GeneratorPage();
+        break;
+      case 1:
+        page = Placeholder();
+        break;
+      default:
+        throw UnimplementedError('no widget for $selectedIndex');
+    }
+    return LayoutBuilder(builder: (context, constraints) {
+        return Scaffold(
+          body: Row(              
+              children: [
+                SafeArea(
+                  child: NavigationRail(
+                    extended: constraints.maxWidth >= 600, //adds reponsive features
+                    
+                    destinations: [
+        
+                      NavigationRailDestination(
+                        icon: Icon(Icons.home),
+                        label: Text('Home'),
+                        ),
+        
+                        NavigationRailDestination(
+                          icon: Icon(Icons.favorite),
+                          label: Text('Favorites'),
+                        ),
+                      ], //destinations array
+                    selectedIndex: selectedIndex,
+                    onDestinationSelected: (value) {
+        
+                      setState(() {
+                        selectedIndex = value;  //the value changes when destination is selected. The value is assigned to the new value.
+                      });
+        
+                    },
+                  ),
+                ),
                 
-                destinations: [
-
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Home'),
-                    ),
-
-                    NavigationRailDestination(
-                      icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
-                    ),
-                ], //destinations array
-                selectedIndex: 0,
-                onDestinationSelected: (value) {
-                  print('selected: $value');
-                },
-              ),
-            ),
-            
-            //expanded widgets are greedy
-            Expanded(
-              child: Container(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: GeneratorPage(),
-              ),
-            ),
-          ], 
-      ),
+                //expanded widgets are greedy
+                Expanded(
+                  child: Container(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    child: page,
+                  ),
+                ),
+              ], 
+          ),
+        );
+      }
     );
   }
 }
